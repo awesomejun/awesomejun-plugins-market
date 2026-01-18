@@ -1,0 +1,33 @@
+{
+  "name": "awesomejun-plugins-market",
+  "owner": {
+    "name": "awesomejun",
+    "email": "sjkang89@gmail.com"
+  },
+  "metadata": {
+    "description": "Awesome plugins for Claude Code by awesomejun",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "awesome-claude-statusline",
+      "source": "https://github.com/awesomejun/awesome-claude-statusline.git",
+      "description": "Claude Code statusline setup wizard - Beautiful Catppuccin-themed 4-line statusline with step-by-step configuration",
+      "version": "1.0.0",
+      "author": {
+        "name": "awesomejun"
+      },
+      "homepage": "https://github.com/awesomejun/awesome-claude-statusline",
+      "repository": "https://github.com/awesomejun/awesome-claude-statusline",
+      "license": "MIT",
+      "keywords": [
+        "statusline",
+        "catppuccin",
+        "theme",
+        "customization",
+        "terminal"
+      ],
+      "category": "customization"
+    }
+  ]
+}
