@@ -31,7 +31,7 @@ Beautiful **Catppuccin-themed statusline** for Claude Code with **3 display mode
 
 ### Full (Long) - 5 lines, 40-block bars
 ```
-🤖 Claude Opus 4.5 | ✅ git clean | 🐍 base | 🎨 learning
+🤖 Claude Opus 4.5 | 🎨 learning | ✅ clean ↑1 | 🐍 base
 📂 /Users/user/projects/my-app 🌿(main) | 💰 1.23$ | ⏰ 12m
 🧠 Context  ████████████████████████████████████████ 56% used (105k/200k)
 🚀 5H Limit ████████████████████████████████████████ 67% (Resets in 1h32m)
@@ -90,6 +90,7 @@ claude
 | Model | Short (Opus) | Full (Claude Opus 4.5) | Full |
 | Output Style | ❌ | ✅ | ✅ |
 | Git Status | Icon only | Icon only | Detailed (+N !N ?N) |
+| Git ↑↓ (ahead/behind) | ❌ | ❌ | ✅ |
 | Conda Env | ❌ | ❌ | ✅ |
 | Cost | ❌ | ❌ | ✅ |
 | Duration | ❌ | ❌ | ✅ |

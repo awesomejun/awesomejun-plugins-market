@@ -51,7 +51,7 @@ Beautiful **Catppuccin Mocha themed statusline** for Claude Code with real-time 
 
 #### Full Mode (5 lines)
 ```
-🤖 Claude Opus 4.5 | ✅ git clean | 🐍 base | 🎨 learning
+🤖 Claude Opus 4.5 | 🎨 learning | ✅ clean ↑1 | 🐍 base
 📂 /Users/kang/project 🌿(main) | 💰 0.15$ | ⏰ 5m
 🧠 Context  ████████████████████████████████████████ 25% used (50k/200k)
 🚀 5H Limit ████████████████████████████████████████ 15% (Resets in 3h42m)
@@ -85,11 +85,12 @@ Each progress bar uses a unique 4-stage gradient that changes color based on usa
 | Icon | Information | Modes |
 |------|-------------|-------|
 | 🤖 | Model name (Opus/Sonnet/Haiku) | All |
+| 🎨 | Output style | Default, Full |
+| ✅/📝 | Git status (clean/dirty) | All |
+| ↑/↓ | Git ahead/behind upstream | Full |
+| 🐍 | Conda environment | Default, Full |
 | 📂 | Current directory path | All |
 | 🌿 | Git branch | All |
-| ✅/📝 | Git status (clean/dirty) | All |
-| 🐍 | Conda environment | Default, Full |
-| 🎨 | Output style | Default, Full |
 | 💰 | Session cost | Full |
 | ⏰ | Session duration | Full |
 | 🧠 | Context window usage | All |

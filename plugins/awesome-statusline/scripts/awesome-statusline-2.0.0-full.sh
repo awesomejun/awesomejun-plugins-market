@@ -2,7 +2,7 @@
 # ============================================================================
 # Awesome Statusline - FULL (Long) Mode
 # ============================================================================
-# Line 1: 🤖 Model | ✅ Git | 🐍 Env | 🎨 Style
+# Line 1: 🤖 Model | 🎨 Style | ✅ Git (↑ahead ↓behind) | 🐍 Env
 # Line 2: 📂 full path 🌿(branch) | 💰 cost | ⏰ duration
 # Line 3: 🧠 Context bar 40 blocks - MochaMaroon→LatteMaroon(40%)→Red(80-100%)
 # Line 4: 🚀 5H Limit bar 40 blocks - Lavender→Lavender(40%)→Blue(80%)→Red(100%)
@@ -157,13 +157,17 @@ generate_bar() {
 }
 
 # ============================================================================
-# Line 1: Model | Git Status | Env | Style
+# Line 1: Model | Style | Git Status (↑ahead ↓behind) | Env
 # ============================================================================
 
 # Model (bold)
 MODEL_DISPLAY="🤖 ${BOLD}$(cat_teal)${MODEL}${RESET}"
 
-# Git status
+# Output style (moved to second position)
+STYLE_DISPLAY=""
+[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY="🎨 $(cat_peach)${OUTPUT_STYLE}${RESET}"
+
+# Git status with ahead/behind arrows
 GIT_STATUS_DISPLAY=""
 cd "$CURRENT_DIR" 2>/dev/null
 if git rev-parse --git-dir > /dev/null 2>&1; then
@@ -171,14 +175,28 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
     UNSTAGED=$(git diff --name-only 2>/dev/null | wc -l | tr -d ' ')
     UNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ')
 
+    # Get ahead/behind count relative to upstream
+    AHEAD_BEHIND=""
+    if git rev-parse --abbrev-ref '@{upstream}' &>/dev/null; then
+        COUNTS=$(git rev-list --left-right --count HEAD...'@{upstream}' 2>/dev/null)
+        if [[ -n "$COUNTS" ]]; then
+            AHEAD=$(echo "$COUNTS" | awk '{print $1}')
+            BEHIND=$(echo "$COUNTS" | awk '{print $2}')
+            [[ "$AHEAD" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}$(latte_sky)↑${AHEAD}${RESET}"
+            [[ "$BEHIND" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}$(latte_pink)↓${BEHIND}${RESET}"
+        fi
+    fi
+
     if [[ "$STAGED" -eq 0 && "$UNSTAGED" -eq 0 && "$UNTRACKED" -eq 0 ]]; then
-        GIT_STATUS_DISPLAY="$(cat_green)✅ git clean${RESET}"
+        GIT_STATUS_DISPLAY="$(cat_green)✅ clean${RESET}"
+        [[ -n "$AHEAD_BEHIND" ]] && GIT_STATUS_DISPLAY="${GIT_STATUS_DISPLAY} ${AHEAD_BEHIND}"
     else
         STATUS=""
         [[ "$STAGED" -gt 0 ]] && STATUS="${STATUS}+${STAGED}"
         [[ "$UNSTAGED" -gt 0 ]] && STATUS="${STATUS}!${UNSTAGED}"
         [[ "$UNTRACKED" -gt 0 ]] && STATUS="${STATUS}?${UNTRACKED}"
-        GIT_STATUS_DISPLAY="$(latte_yellow)📝 git dirty ${STATUS}${RESET}"
+        GIT_STATUS_DISPLAY="$(latte_yellow)📝 dirty ${STATUS}${RESET}"
+        [[ -n "$AHEAD_BEHIND" ]] && GIT_STATUS_DISPLAY="${GIT_STATUS_DISPLAY} ${AHEAD_BEHIND}"
     fi
 else
     GIT_STATUS_DISPLAY="$(cat_overlay)no git${RESET}"
@@ -192,11 +210,10 @@ else
     ENV_DISPLAY="$(cat_overlay)no env${RESET}"
 fi
 
-# Output style
-STYLE_DISPLAY=""
-[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY="🎨 $(cat_peach)${OUTPUT_STYLE}${RESET}"
-
-LINE1="${MODEL_DISPLAY} | ${GIT_STATUS_DISPLAY} | ${ENV_DISPLAY} | ${STYLE_DISPLAY}"
+# Build Line 1: Model | Style | Git | Env
+LINE1="${MODEL_DISPLAY}"
+[[ -n "$STYLE_DISPLAY" ]] && LINE1="${LINE1} | ${STYLE_DISPLAY}"
+LINE1="${LINE1} | ${GIT_STATUS_DISPLAY} | ${ENV_DISPLAY}"
 
 # ============================================================================
 # Line 2: Directory + Branch | Cost | Duration
