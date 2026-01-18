@@ -1,6 +1,6 @@
 ---
-name: statusline-mode
-description: Awesome Statusline 모드를 변경합니다 (compact/default/full)
+name: awesome-statusline-mode
+description: Awesome Statusline 2.0 모드를 변경합니다 (compact/default/full)
 allowed-tools:
   - Read
   - Write
@@ -10,9 +10,9 @@ allowed-tools:
 argument-hint: "[compact|default|full]"
 ---
 
-# Statusline Mode Switcher
+# Awesome Statusline Mode Switcher
 
-Awesome Statusline의 모드를 변경합니다.
+Awesome Statusline 2.0의 모드를 변경합니다.
 
 ## 3가지 모드
 
@@ -26,14 +26,14 @@ Awesome Statusline의 모드를 변경합니다.
 
 ### 인자로 직접 지정
 ```
-/statusline-mode compact   # Compact 모드로 변경
-/statusline-mode default   # Default 모드로 변경 (기본값)
-/statusline-mode full      # Full 모드로 변경
+/awesome-statusline-mode compact   # Compact 모드로 변경
+/awesome-statusline-mode default   # Default 모드로 변경 (기본값)
+/awesome-statusline-mode full      # Full 모드로 변경
 ```
 
 ### 대화형 선택
 ```
-/statusline-mode           # 모드 선택 UI 표시
+/awesome-statusline-mode           # 모드 선택 UI 표시
 ```
 
 ## 처리 로직
@@ -77,7 +77,7 @@ AskUserQuestion으로 모드 선택:
 
 ### 인자 사용
 ```
-사용자: /statusline-mode compact
+사용자: /awesome-statusline-mode compact
 
 Claude: ✅ Statusline 모드가 **Compact (Short)**로 변경되었습니다!
 
@@ -92,7 +92,7 @@ Claude: ✅ Statusline 모드가 **Compact (Short)**로 변경되었습니다!
 
 ### 대화형 선택
 ```
-사용자: /statusline-mode
+사용자: /awesome-statusline-mode
 
 Claude: 어떤 Statusline 모드를 사용하시겠습니까?
 
