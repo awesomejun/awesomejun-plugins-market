@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "awesomejun-plugins-market",
+  "name": "awesome-claude-plugins",
   "description": "Awesome plugins for Claude Code by awesomejun",
   "owner": {
     "name": "awesomejun",
@@ -16,7 +16,7 @@
       },
       "source": "./plugins/awesome-statusline",
       "category": "tools",
-      "homepage": "https://github.com/awesomejun/awesomejun-plugins-market/tree/main/plugins/awesome-statusline"
+      "homepage": "https://github.com/awesomejun/awesome-claude-plugins/tree/main/plugins/awesome-statusline"
     }
   ]
 }
