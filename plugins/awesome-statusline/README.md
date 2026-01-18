@@ -10,7 +10,7 @@ Beautiful **Catppuccin-themed statusline** for Claude Code with **3 display mode
 - **3 Display Modes**: Compact, Default, Full
 - **Catppuccin Mocha Theme**: Beautiful gradient progress bars
 - **Real-time Info**: Model, Git status, Context usage, API limits
-- **Easy Mode Switching**: `/statusline-mode` command
+- **Easy Mode Switching**: `/awesome-statusline-mode` command
 - **Dynamic % Colors**: Percentage numbers match gradient end color (Bold)
 
 ## 3 Modes
@@ -59,20 +59,25 @@ claude
 
 ## Usage
 
-### Switch Mode
-
-```bash
-/statusline-mode compact   # Compact mode
-/statusline-mode default   # Default mode (default)
-/statusline-mode full      # Full mode
-
-/statusline-mode           # Interactive selection
-```
-
 ### Initial Setup
 
 ```bash
-/make-statusline-awesome   # Setup wizard
+/awesome-statusline-start           # Interactive setup wizard
+/awesome-statusline-start default   # Install Default mode directly
+/awesome-statusline-start full      # Install Full mode directly
+/awesome-statusline-start legacy    # Install 1.0.0 Legacy mode
+```
+
+### Switch Mode
+
+```bash
+/awesome-statusline-mode compact   # Compact mode
+/awesome-statusline-mode default   # Default mode
+/awesome-statusline-mode full      # Full mode
+/awesome-statusline-mode legacy    # 1.0.0 Legacy mode
+/awesome-statusline-mode restore   # Restore from backup
+
+/awesome-statusline-mode           # Interactive selection
 ```
 
 ## Mode Comparison
