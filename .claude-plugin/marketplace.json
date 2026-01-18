@@ -6,19 +6,20 @@
   },
   "metadata": {
     "description": "Awesome plugins for Claude Code by awesomejun",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "plugins": [
     {
-      "name": "awesome-claude-statusline",
+      "name": "awesome-statusline",
       "source": {
-        "source": "url",
+        "type": "url",
         "url": "https://github.com/awesomejun/awesome-claude-statusline.git"
       },
-      "description": "Claude Code statusline setup wizard - Beautiful Catppuccin-themed 4-line statusline with step-by-step configuration",
-      "version": "1.0.0",
+      "description": "Beautiful Catppuccin-themed statusline with 3 modes: Compact, Default, Full",
+      "version": "2.0.0",
       "author": {
-        "name": "awesomejun"
+        "name": "awesomejun",
+        "github": "awesomejun"
       },
       "homepage": "https://github.com/awesomejun/awesome-claude-statusline",
       "repository": "https://github.com/awesomejun/awesome-claude-statusline",
@@ -26,11 +27,10 @@
       "keywords": [
         "statusline",
         "catppuccin",
-        "theme",
-        "customization",
-        "terminal"
+        "terminal",
+        "customization"
       ],
-      "category": "customization"
+      "category": "tools"
     }
   ]
 }
