@@ -11,6 +11,24 @@ A curated collection of awesome plugins for Claude Code by [@awesomejun](https:/
 |--------|-------------|---------|
 | [awesome-claude-statusline](https://github.com/awesomejun/awesome-claude-statusline) | Beautiful Catppuccin-themed 4-line statusline with interactive setup wizard | 1.0.0 |
 
+### 🎨 awesome-claude-statusline
+
+Beautiful **Catppuccin Mocha themed 4-line statusline** for Claude Code.
+
+**Features:**
+- 🎨 Catppuccin Mocha theme with gradient progress bars
+- 📊 4-line display: Model, Git, Conda, Context, API Usage
+- 💡 Auto-setup when statusline is not configured
+- 📦 **Auto-backup**: Automatically backs up your existing statusline before replacing
+- 🔄 **Easy restore**: Restore previous statusline with `/make-statusline-awesome restore`
+
+**Commands:**
+```bash
+/make-statusline-awesome              # Quick setup (default theme)
+/make-statusline-awesome customize    # Customize theme and options
+/make-statusline-awesome restore      # Restore previous statusline
+```
+
 ## 🚀 Installation
 
 ### Step 1: Add This Marketplace
@@ -33,6 +51,16 @@ A curated collection of awesome plugins for Claude Code by [@awesomejun](https:/
 # Exit current session and restart
 claude
 ```
+
+## 🔄 Automatic Backup (awesome-claude-statusline)
+
+**Your existing statusline is always safe!**
+
+When you install and run the statusline setup:
+
+1. ✅ Your existing script is backed up to `~/.claude/statusline-backup-{timestamp}.sh`
+2. ✅ Your existing settings are saved to `~/.claude/statusline-backup-{timestamp}.json`
+3. ✅ Restore anytime with `/make-statusline-awesome restore`
 
 ## 📋 Marketplace Commands
 
@@ -60,7 +88,10 @@ Want to add your plugin to this marketplace?
 ```json
 {
   "name": "your-plugin-name",
-  "source": "https://github.com/username/your-plugin.git",
+  "source": {
+    "source": "url",
+    "url": "https://github.com/username/your-plugin.git"
+  },
   "description": "Brief description of your plugin",
   "version": "1.0.0",
   "author": {
