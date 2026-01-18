@@ -7,7 +7,7 @@ allowed-tools:
   - Edit
   - Bash
   - AskUserQuestion
-argument-hint: "[2.0|1.0|legacy]"
+argument-hint: "[compact|default|full|legacy|restore]"
 ---
 
 # Awesome Statusline Setup Wizard
@@ -72,9 +72,11 @@ AskUserQuestion으로 물어봅니다:
 
 | 인자 | 동작 |
 |------|------|
-| (없음) | 대화형 버전 선택 시작 |
-| `2.0` | 바로 2.0.0 모드 선택으로 진입 |
-| `1.0` 또는 `legacy` | 바로 1.0.0 Legacy 설치 |
+| (없음) | 대화형 버전/모드 선택 시작 |
+| `compact` | 2.0.0 Compact 모드 바로 설치 |
+| `default` | 2.0.0 Default 모드 바로 설치 |
+| `full` | 2.0.0 Full 모드 바로 설치 |
+| `legacy` 또는 `1.0.0` | 1.0.0 Legacy 바로 설치 |
 | `restore` | 가장 최근 백업에서 복원 |
 
 ### 설치 경로

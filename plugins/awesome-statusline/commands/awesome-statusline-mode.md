@@ -1,34 +1,55 @@
 ---
 name: awesome-statusline-mode
-description: Awesome Statusline 2.0 모드를 변경합니다 (compact/default/full)
+description: Awesome Statusline 모드를 변경합니다 (compact/default/full/legacy)
 allowed-tools:
   - Read
   - Write
   - Edit
   - Bash
   - AskUserQuestion
-argument-hint: "[compact|default|full]"
+argument-hint: "[compact|default|full|legacy|restore]"
 ---
 
 # Awesome Statusline Mode Switcher
 
-Awesome Statusline 2.0의 모드를 변경합니다.
+Awesome Statusline의 모드를 변경합니다.
 
-## 3가지 모드
+## 모드 종류
 
-| 모드 | 별칭 | 줄 수 | 바 크기 | 설명 |
-|------|------|-------|---------|------|
-| **compact** | short | 2줄 | 10블록 | 최소 정보, 좁은 터미널용 |
-| **default** | - | 2줄 | 10블록 | 기본값, 균형잡힌 정보 |
-| **full** | long | 5줄 | 20블록 | 상세 정보, 비용, 시간 포함 |
+### 2.0.0 모드 (3가지)
+
+| 모드 | 줄 수 | 바 크기 | 설명 |
+|------|-------|---------|------|
+| **compact** | 2줄 | 10블록 | 최소 정보, 좁은 터미널용 |
+| **default** | 2줄 | 20블록 | 기본값, 균형잡힌 정보 |
+| **full** | 5줄 | 40블록 | 상세 정보, 비용, 시간, 커스텀 그라데이션 |
+
+### 1.0.0 Legacy
+
+| 모드 | 줄 수 | 설명 |
+|------|-------|------|
+| **legacy** | 4줄 | 기존 심플 디자인 (1.0.0) |
+
+## 인자 처리
+
+| 인자 | 동작 |
+|------|------|
+| (없음) | 대화형 모드 선택 |
+| `compact` | 2.0.0 Compact 모드로 변경 |
+| `default` | 2.0.0 Default 모드로 변경 |
+| `full` | 2.0.0 Full 모드로 변경 |
+| `legacy` 또는 `1.0.0` | 1.0.0 Legacy 모드로 변경 |
+| `restore` | 가장 최근 백업에서 복원 |
 
 ## 사용법
 
 ### 인자로 직접 지정
 ```
 /awesome-statusline-mode compact   # Compact 모드로 변경
-/awesome-statusline-mode default   # Default 모드로 변경 (기본값)
+/awesome-statusline-mode default   # Default 모드로 변경
 /awesome-statusline-mode full      # Full 모드로 변경
+/awesome-statusline-mode legacy    # 1.0.0 Legacy로 변경
+/awesome-statusline-mode restore   # 백업에서 복원
 ```
 
 ### 대화형 선택
@@ -40,24 +61,16 @@ Awesome Statusline 2.0의 모드를 변경합니다.
 
 ### 1. 인자가 있는 경우
 
-인자가 `compact`, `default`, `full` 중 하나면 바로 해당 모드로 변경:
+인자에 따라 해당 스크립트를 `~/.claude/awesome-statusline.sh`로 복사:
 
-1. 해당 스크립트를 `~/.claude/awesome-statusline.sh`로 복사
-   - compact: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-compact.sh`
-   - default: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-default.sh`
-   - full: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-full.sh`
+| 인자 | 소스 스크립트 |
+|------|---------------|
+| `compact` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-compact.sh` |
+| `default` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-default.sh` |
+| `full` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-full.sh` |
+| `legacy` / `1.0.0` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline.sh` |
 
-2. 실행 권한 부여: `chmod +x ~/.claude/awesome-statusline.sh`
-
-3. `~/.claude/settings.json`의 `statusLine` 설정 확인/업데이트:
-   ```json
-   "statusLine": {
-     "type": "command",
-     "command": "~/.claude/awesome-statusline.sh"
-   }
-   ```
-
-4. 완료 메시지 표시
+실행 권한 부여 후 완료 메시지 표시.
 
 ### 2. 인자가 없는 경우
 
@@ -66,12 +79,19 @@ AskUserQuestion으로 모드 선택:
 ```
 어떤 Statusline 모드를 사용하시겠습니까?
 
-[Compact (Short)] - 2줄, 최소 정보
-[Default] - 2줄, 기본값 (권장)
-[Full (Long)] - 5줄, 상세 정보
+[Compact] - 2줄, 최소 정보
+[Default (Recommended)] - 2줄, 균형잡힌 정보
+[Full] - 5줄, 상세 정보
+[Legacy 1.0.0] - 기존 심플 디자인
 ```
 
-선택 후 위와 동일하게 처리
+선택 후 해당 스크립트 복사
+
+### 3. restore 인자
+
+가장 최근 백업 파일에서 복원:
+- `~/.claude/statusline-backup-*.sh` 검색
+- 가장 최근 파일을 `~/.claude/awesome-statusline.sh`로 복사
 
 ## 예시 대화
 
