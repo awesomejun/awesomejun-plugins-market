@@ -65,10 +65,10 @@ Awesome Statusline의 모드를 변경합니다.
 
 | 인자 | 소스 스크립트 |
 |------|---------------|
-| `compact` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-compact.sh` |
-| `default` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-default.sh` |
-| `full` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-full.sh` |
-| `legacy` / `1.0.0` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline.sh` |
+| `compact` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-compact.sh` |
+| `default` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-default.sh` |
+| `full` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-full.sh` |
+| `legacy` / `1.0.0` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-1.0.0-legacy.sh` |
 
 실행 권한 부여 후 완료 메시지 표시.
 

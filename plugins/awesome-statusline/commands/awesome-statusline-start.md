@@ -64,7 +64,7 @@ AskUserQuestion으로 물어봅니다:
 ### Step 2c: 1.0.0 Legacy 선택 시
 
 바로 Legacy 스크립트 설치:
-- `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline.sh`를 `~/.claude/awesome-statusline.sh`로 복사
+- `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-1.0.0-legacy.sh`를 `~/.claude/awesome-statusline.sh`로 복사
 
 ## 처리 로직
 
@@ -82,12 +82,12 @@ AskUserQuestion으로 물어봅니다:
 ### 설치 경로
 
 **2.0.0 버전:**
-- Compact: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-compact.sh`
-- Default: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-default.sh`
-- Full: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-full.sh`
+- Compact: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-compact.sh`
+- Default: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-default.sh`
+- Full: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-full.sh`
 
 **1.0.0 Legacy:**
-- `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline.sh`
+- `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-1.0.0-legacy.sh`
 
 모든 버전은 `~/.claude/awesome-statusline.sh`로 복사됩니다.
 
