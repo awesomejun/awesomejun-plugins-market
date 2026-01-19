@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <img src="plugins/awesome-statusline/assets/hero.jpeg" alt="Awesome Statusline Hero" width="100%"/>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Claude%20Code-Plugin%20Marketplace-blueviolet?style=flat-square" alt="Claude Code Plugin Marketplace"/>
   <img src="https://img.shields.io/badge/theme-Catppuccin%20Mocha-f5c2e7?style=flat-square" alt="Catppuccin Mocha"/>
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"/>
