@@ -16,7 +16,7 @@ Awesome Statusline의 모드를 변경합니다.
 
 ## 모드 종류
 
-### 2.0.0 모드 (3가지)
+### 2.1.0 모드 (3가지)
 
 | 모드 | 줄 수 | 바 크기 | 설명 |
 |------|-------|---------|------|
@@ -35,9 +35,9 @@ Awesome Statusline의 모드를 변경합니다.
 | 인자 | 동작 |
 |------|------|
 | (없음) | 대화형 모드 선택 |
-| `compact` | 2.0.0 Compact 모드로 변경 |
-| `default` | 2.0.0 Default 모드로 변경 |
-| `full` | 2.0.0 Full 모드로 변경 |
+| `compact` | 2.1.0 Compact 모드로 변경 |
+| `default` | 2.1.0 Default 모드로 변경 |
+| `full` | 2.1.0 Full 모드로 변경 |
 | `legacy` 또는 `1.0.0` | 1.0.0 Legacy 모드로 변경 |
 | `restore` | 가장 최근 백업에서 복원 |
 
@@ -65,9 +65,9 @@ Awesome Statusline의 모드를 변경합니다.
 
 | 인자 | 소스 스크립트 |
 |------|---------------|
-| `compact` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-compact.sh` |
-| `default` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-default.sh` |
-| `full` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-full.sh` |
+| `compact` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.1.0-compact.sh` |
+| `default` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.1.0-default.sh` |
+| `full` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.1.0-full.sh` |
 | `legacy` / `1.0.0` | `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-1.0.0-legacy.sh` |
 
 실행 권한 부여 후 완료 메시지 표시.

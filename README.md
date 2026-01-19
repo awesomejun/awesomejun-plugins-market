@@ -36,9 +36,9 @@ Beautiful **Catppuccin Mocha themed statusline** for Claude Code with real-time 
 
 | Mode | Version | Lines | Bar Width | Best For |
 |------|---------|-------|-----------|----------|
-| **Compact** | 2.0.0 | 2 | 10 blocks | Narrow terminals, minimal info |
-| **Default** | 2.0.0 | 2 | 10 blocks | Balanced information display |
-| **Full** | 2.0.0 | 5 | 40 blocks | Detailed monitoring with cost, time, git sync |
+| **Compact** | 2.1.0 | 2 | 10 blocks | Narrow terminals, minimal info |
+| **Default** | 2.1.0 | 2 | 10 blocks | Balanced information display |
+| **Full** | 2.1.0 | 5 | 40 blocks | Detailed monitoring with cost, time, git sync |
 | **Legacy** | 1.0.0 | 4 | 40 blocks | Classic design, simple gradients |
 
 ---
@@ -221,7 +221,7 @@ claude
 /awesome-statusline-start
 ```
 
-설치 마법사가 버전(2.0.0/1.0.0) → 모드(Compact/Default/Full/Legacy) → 설치방식을 안내합니다.
+설치 마법사가 버전(2.1.0/1.0.0) → 모드(Compact/Default/Full/Legacy) → 설치방식을 안내합니다.
 
 ---
 

@@ -18,10 +18,10 @@ Claude Code의 Awesome Statusline을 설치하는 대화형 마법사입니다.
 
 | 버전 | 모드 | 설명 |
 |------|------|------|
-| **2.0.0** (기본) | Compact / Default / Full | 새로운 3-mode 시스템, 40블록 바, 4단계 그라데이션 |
+| **2.1.0** (기본) | Compact / Default / Full | 새로운 3-mode 시스템, 40블록 바, 4단계 그라데이션 |
 | **1.0.0** (Legacy) | Single | 기존 단일 모드, 심플한 디자인 |
 
-## 2.0.0 모드 상세
+## 2.1.0 모드 상세
 
 | 모드 | 줄 수 | 바 크기 | 설명 |
 |------|-------|---------|------|
@@ -38,11 +38,11 @@ AskUserQuestion으로 물어봅니다:
 ```
 어떤 버전을 설치하시겠습니까?
 
-[2.0.0 (Recommended)] - 3-mode 시스템, 새로운 디자인
+[2.1.0 (Recommended)] - 3-mode 시스템, 새로운 디자인
 [1.0.0 Legacy] - 기존 심플 디자인
 ```
 
-### Step 2a: 2.0.0 선택 시 - 모드 선택
+### Step 2a: 2.1.0 선택 시 - 모드 선택
 
 ```
 어떤 모드로 시작하시겠습니까?
@@ -73,18 +73,18 @@ AskUserQuestion으로 물어봅니다:
 | 인자 | 동작 |
 |------|------|
 | (없음) | 대화형 버전/모드 선택 시작 |
-| `compact` | 2.0.0 Compact 모드 바로 설치 |
-| `default` | 2.0.0 Default 모드 바로 설치 |
-| `full` | 2.0.0 Full 모드 바로 설치 |
+| `compact` | 2.1.0 Compact 모드 바로 설치 |
+| `default` | 2.1.0 Default 모드 바로 설치 |
+| `full` | 2.1.0 Full 모드 바로 설치 |
 | `legacy` 또는 `1.0.0` | 1.0.0 Legacy 바로 설치 |
 | `restore` | 가장 최근 백업에서 복원 |
 
 ### 설치 경로
 
-**2.0.0 버전:**
-- Compact: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-compact.sh`
-- Default: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-default.sh`
-- Full: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.0.0-full.sh`
+**2.1.0 버전:**
+- Compact: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.1.0-compact.sh`
+- Default: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.1.0-default.sh`
+- Full: `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-2.1.0-full.sh`
 
 **1.0.0 Legacy:**
 - `${CLAUDE_PLUGIN_ROOT}/scripts/awesome-statusline-1.0.0-legacy.sh`
@@ -115,7 +115,7 @@ jq '.statusLine' ~/.claude/settings.json > ~/.claude/statusline-backup-${TIMESTA
 
 ## 예시 대화
 
-### 기본 설치 (2.0.0)
+### 기본 설치 (2.1.0)
 ```
 사용자: /awesome-statusline-start
 
@@ -123,9 +123,9 @@ Claude: 안녕하세요! Awesome Statusline 설치 마법사입니다.
 
         어떤 버전을 설치하시겠습니까?
 
-        [2.0.0 (Recommended)] [1.0.0 Legacy]
+        [2.1.0 (Recommended)] [1.0.0 Legacy]
 
-사용자: 2.0.0
+사용자: 2.1.0
 
 Claude: 어떤 모드로 시작하시겠습니까?
 
@@ -139,7 +139,7 @@ Claude: 설치 방식을 선택하세요:
 
 사용자: 기본 설치
 
-Claude: ✅ Awesome Statusline 2.0.0 Full 모드가 설치되었습니다!
+Claude: ✅ Awesome Statusline 2.1.0 Full 모드가 설치되었습니다!
 
         📁 스크립트: ~/.claude/awesome-statusline.sh
         🎨 모드: Full (5줄, 40블록 바)
@@ -160,7 +160,7 @@ Claude: ✅ Awesome Statusline 1.0.0 Legacy가 설치되었습니다!
 
         🔄 Claude Code를 재시작하면 적용됩니다.
 
-        💡 2.0.0으로 업그레이드: /awesome-statusline-start 2.0
+        💡 2.1.0으로 업그레이드: /awesome-statusline-start 2.0
 ```
 
 ### 커스터마이즈 선택 시
