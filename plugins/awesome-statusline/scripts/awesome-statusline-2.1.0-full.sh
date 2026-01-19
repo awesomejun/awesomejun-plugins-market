@@ -3,10 +3,10 @@
 # Awesome Statusline - FULL (Long) Mode
 # ============================================================================
 # Line 1: 🤖 Model | 🎨 Style | ✅ Git (↑ahead ↓behind) | 🐍 Env
-# Line 2: 📂 full path 🌿(branch) | 💰 cost | ⏰ duration
+# Line 2: 📂 full path 🌿(branch) | 💰 cost | ⏱️ duration
 # Line 3: 🧠 Context bar 40 blocks - MochaMaroon→LatteMaroon(40%)→Red(80-100%)
 # Line 4: 🚀 5H Limit bar 40 blocks - Lavender→Lavender(40%)→Blue(80%)→Red(100%)
-# Line 5: ⭐ 7D Limit bar 40 blocks - Yellow→Yellow(40%)→Green(80%)→Red(100%)
+# Line 5: 🌟 7D Limit bar 40 blocks - Yellow→Yellow(40%)→Green(80%)→Red(100%)
 # 5H Reset: "(Resets in 2h15m)" | 7D Reset: "(Resets Jan 21 at 2pm)"
 # ============================================================================
 
@@ -250,9 +250,9 @@ if [[ "$TOTAL_DURATION" != "0" && -n "$TOTAL_DURATION" ]]; then
     else
         DURATION_FMT="${DURATION_SEC}s"
     fi
-    DURATION_DISPLAY="⏰ $(cat_subtext)${DURATION_FMT}${RESET}"
+    DURATION_DISPLAY="⏱️ $(cat_subtext)${DURATION_FMT}${RESET}"
 else
-    DURATION_DISPLAY="⏰ $(cat_overlay)0s${RESET}"
+    DURATION_DISPLAY="⏱️ $(cat_overlay)0s${RESET}"
 fi
 
 LINE2="${DIR_DISPLAY}${BRANCH_DISPLAY} | ${COST_DISPLAY} | ${DURATION_DISPLAY}"
@@ -364,10 +364,10 @@ if [[ -n "$USAGE_DATA" ]]; then
     SEVEN_END_COLOR=$(get_usage_7d_gradient_color "$SEVEN_DAY")
 
     LINE4="🚀 $(cat_lavender)5H Limit${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (Resets ${FIVE_RESET_FMT})"
-    LINE5="⭐ $(cat_yellow)7D Limit${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (Resets ${SEVEN_RESET_FMT})"
+    LINE5="🌟 $(cat_yellow)7D Limit${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (Resets ${SEVEN_RESET_FMT})"
 else
     LINE4="🚀 $(cat_overlay)5H Limit${RESET}: N/A"
-    LINE5="⭐ $(cat_overlay)7D Limit${RESET}: N/A"
+    LINE5="🌟 $(cat_overlay)7D Limit${RESET}: N/A"
 fi
 
 # ============================================================================
