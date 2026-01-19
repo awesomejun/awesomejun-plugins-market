@@ -2,7 +2,7 @@
 # ============================================================================
 # Awesome Statusline - FULL (Long) Mode
 # ============================================================================
-# Line 1: 🤖 Model | 🎨 Style | ✅ Git (↑ahead ↓behind) | 🐍 Env | v2.1.0
+# Line 1: 🤖 Model | 🎨 Style | ✅ Git (↑ahead ↓behind) | 🐍 Env
 # Line 2: 📂 full path 🌿(branch) | 💰 cost | ⏱️ duration
 # Line 3: 🧠 Context bar 40 blocks - MochaMaroon→LatteMaroon(40%)→Red(80-100%)
 # Line 4: 🚀 5H Limit bar 40 blocks - Lavender→Lavender(40%)→Blue(80%)→Red(100%)
@@ -211,13 +211,10 @@ else
     ENV_DISPLAY="$(cat_overlay)no env${RESET}"
 fi
 
-# Plugin version (dark gray, same as no git/no env)
-VERSION_DISPLAY="$(cat_overlay)v2.1.0${RESET}"
-
-# Build Line 1: Model | Style | Git | Env | Version
+# Build Line 1: Model | Style | Git | Env
 LINE1="${MODEL_DISPLAY}"
 [[ -n "$STYLE_DISPLAY" ]] && LINE1="${LINE1} | ${STYLE_DISPLAY}"
-LINE1="${LINE1} | ${GIT_STATUS_DISPLAY} | ${ENV_DISPLAY} | ${VERSION_DISPLAY}"
+LINE1="${LINE1} | ${GIT_STATUS_DISPLAY} | ${ENV_DISPLAY}"
 
 # ============================================================================
 # Line 2: Directory + Branch | Cost | Duration
