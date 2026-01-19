@@ -7,6 +7,8 @@
 # Line 3: 📝 Context Window (progress bar with gradient)
 # Line 4: 🚀 5H + 7D Usage (progress bars with gradient)
 # ============================================================================
+# v1.0.2 - Fixed: echo -e → variables, added line clear \033[K
+# ============================================================================
 
 input=$(cat)
 
@@ -18,36 +20,33 @@ CURRENT_USAGE=$(echo "$input" | jq -r '.context_window.current_usage // null')
 OUTPUT_STYLE=$(echo "$input" | jq -r '.output_style.name // ""')
 
 # ============================================================================
-# Catppuccin Mocha Colors (True Color - 24bit)
+# Colors (variables instead of functions to avoid newline issues)
 # ============================================================================
 RESET="\033[0m"
 BOLD="\033[1m"
 DIM="\033[2m"
+CLR="\033[K"  # Clear to end of line
 
 # Catppuccin Mocha palette
-cat_pink() { echo -e "\033[38;2;245;194;231m"; }      # #f5c2e7
-cat_green() { echo -e "\033[38;2;166;227;161m"; }     # #a6e3a1
-cat_yellow() { echo -e "\033[38;2;249;226;175m"; }    # #f9e2af
-cat_peach() { echo -e "\033[38;2;250;179;135m"; }     # #fab387
-cat_red() { echo -e "\033[38;2;243;139;168m"; }       # #f38ba8
-cat_maroon() { echo -e "\033[38;2;235;160;172m"; }    # #eba0ac
-cat_teal() { echo -e "\033[38;2;148;226;213m"; }      # #94e2d5
-cat_sky() { echo -e "\033[38;2;137;220;235m"; }       # #89dceb
-cat_blue() { echo -e "\033[38;2;137;180;250m"; }      # #89b4fa
-cat_lavender() { echo -e "\033[38;2;180;190;254m"; }  # #b4befe
-cat_text() { echo -e "\033[38;2;205;214;244m"; }      # #cdd6f4
-cat_subtext() { echo -e "\033[38;2;166;173;200m"; }   # #a6adc8
-cat_overlay() { echo -e "\033[38;2;108;112;134m"; }   # #6c7086
-
-# Helper function: RGB color
-rgb() { echo -e "\033[38;2;$1;$2;$3m"; }
+C_PINK="\033[38;2;245;194;231m"
+C_GREEN="\033[38;2;166;227;161m"
+C_YELLOW="\033[38;2;249;226;175m"
+C_PEACH="\033[38;2;250;179;135m"
+C_RED="\033[38;2;243;139;168m"
+C_MAROON="\033[38;2;235;160;172m"
+C_TEAL="\033[38;2;148;226;213m"
+C_SKY="\033[38;2;137;220;235m"
+C_BLUE="\033[38;2;137;180;250m"
+C_LAVENDER="\033[38;2;180;190;254m"
+C_TEXT="\033[38;2;205;214;244m"
+C_SUBTEXT="\033[38;2;166;173;200m"
+C_OVERLAY="\033[38;2;108;112;134m"
 
 # ============================================================================
 # Gradient functions for progress bars
 # ============================================================================
 
 # Context gradient: Latte Yellow(0%) → Latte Red(50%) → Mauve(100%)
-# 0-50%: Latte Yellow→Latte Red, 50-100%: Latte Red→Mauve
 get_context_gradient_color() {
     local pct=$1
     local r g b
@@ -94,15 +93,12 @@ get_usage_gradient_color() {
 # ============================================================================
 # Progress bar generator with gradient
 # ============================================================================
-# Usage: generate_progress_bar <percentage> <width> <gradient_type>
-# gradient_type: "context" or "usage"
 generate_progress_bar() {
     local pct=$1
     local width=$2
     local gradient_type=$3
     local bar=""
 
-    # 반올림 적용: (pct * width + 50) / 100
     local filled=$(( (pct * width + 50) / 100 ))
     [[ $filled -gt $width ]] && filled=$width
 
@@ -133,7 +129,7 @@ generate_progress_bar() {
     done
 
     bar+="$RESET"
-    echo -e "$bar"
+    printf "%b" "$bar"
 }
 
 # ============================================================================
@@ -142,10 +138,10 @@ generate_progress_bar() {
 
 # Model with emoji - Opus gets Catppuccin Pink
 case "$MODEL" in
-    *Opus*) MODEL_DISPLAY="🧠 $(cat_pink)${MODEL}${RESET}" ;;
-    *Sonnet*) MODEL_DISPLAY="🎵 $(cat_lavender)${MODEL}${RESET}" ;;
-    *Haiku*) MODEL_DISPLAY="⚡️ $(cat_sky)${MODEL}${RESET}" ;;
-    *) MODEL_DISPLAY="🤖 $(cat_text)${MODEL}${RESET}" ;;
+    *Opus*) MODEL_DISPLAY="🧠 ${C_PINK}${MODEL}${RESET}" ;;
+    *Sonnet*) MODEL_DISPLAY="🎵 ${C_LAVENDER}${MODEL}${RESET}" ;;
+    *Haiku*) MODEL_DISPLAY="⚡️ ${C_SKY}${MODEL}${RESET}" ;;
+    *) MODEL_DISPLAY="🤖 ${C_TEXT}${MODEL}${RESET}" ;;
 esac
 
 # Git status
@@ -153,26 +149,26 @@ GIT_STATUS=""
 cd "$CURRENT_DIR" 2>/dev/null
 if git rev-parse --git-dir > /dev/null 2>&1; then
     if git diff --quiet && git diff --cached --quiet 2>/dev/null; then
-        GIT_STATUS="$(cat_green)✅ clean${RESET}"
+        GIT_STATUS="${C_GREEN}✅ clean${RESET}"
     else
-        GIT_STATUS="$(cat_peach)🚧 dirty${RESET}"
+        GIT_STATUS="${C_PEACH}🚧 dirty${RESET}"
     fi
 else
-    GIT_STATUS="$(cat_overlay)no git${RESET}"
+    GIT_STATUS="${C_OVERLAY}no git${RESET}"
 fi
 
 # Conda environment
 CONDA_ENV=""
 if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
-    CONDA_ENV="$(cat_yellow)🐍 $CONDA_DEFAULT_ENV${RESET}"
+    CONDA_ENV="${C_YELLOW}🐍 $CONDA_DEFAULT_ENV${RESET}"
 else
-    CONDA_ENV="$(cat_overlay)no conda${RESET}"
+    CONDA_ENV="${C_OVERLAY}no conda${RESET}"
 fi
 
 # Output style
 OUTPUT_STYLE_DISPLAY=""
 if [[ -n "$OUTPUT_STYLE" ]]; then
-    OUTPUT_STYLE_DISPLAY=" | 🎨 $(cat_lavender)${OUTPUT_STYLE}${RESET}"
+    OUTPUT_STYLE_DISPLAY=" | 🎨 ${C_LAVENDER}${OUTPUT_STYLE}${RESET}"
 fi
 
 LINE1="${BOLD}${MODEL_DISPLAY}${RESET} | ${GIT_STATUS} | ${CONDA_ENV}${OUTPUT_STYLE_DISPLAY}"
@@ -182,7 +178,7 @@ LINE1="${BOLD}${MODEL_DISPLAY}${RESET} | ${GIT_STATUS} | ${CONDA_ENV}${OUTPUT_ST
 # ============================================================================
 
 # Directory path
-DIR_DISPLAY="📂 $(cat_blue)${CURRENT_DIR}${RESET}"
+DIR_DISPLAY="📂 ${C_BLUE}${CURRENT_DIR}${RESET}"
 
 # Git branch with 🌿 emoji (darker green)
 GIT_BRANCH_DISPLAY=""
@@ -317,16 +313,15 @@ if [[ -n "$USAGE_DATA" ]]; then
     FIVE_END_COLOR=$(get_usage_gradient_color "$FIVE_HOUR")
     SEVEN_END_COLOR=$(get_usage_gradient_color "$SEVEN_DAY")
 
-    LINE4="🚀 \033[38;2;${FIVE_END_COLOR}mUsage 5H${RESET} ${FIVE_BAR} \033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} $(cat_overlay)(${FIVE_RESET_FMT})${RESET} | \033[38;2;${SEVEN_END_COLOR}m7D${RESET} ${SEVEN_BAR} \033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} $(cat_overlay)(${SEVEN_RESET_FMT})${RESET}"
+    LINE4="🚀 \033[38;2;${FIVE_END_COLOR}mUsage 5H${RESET} ${FIVE_BAR} \033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} ${C_OVERLAY}(${FIVE_RESET_FMT})${RESET} | \033[38;2;${SEVEN_END_COLOR}m7D${RESET} ${SEVEN_BAR} \033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} ${C_OVERLAY}(${SEVEN_RESET_FMT})${RESET}"
 else
-    LINE4="$(cat_overlay)🚀 Usage: unavailable${RESET}"
+    LINE4="${C_OVERLAY}🚀 Usage: unavailable${RESET}"
 fi
 
 # ============================================================================
-# OUTPUT
+# OUTPUT (using printf with line clear)
 # ============================================================================
-
-echo -e "$LINE1"
-echo -e "$LINE2"
-echo -e "$LINE3"
-echo -e "$LINE4"
+printf "%b%b\n" "$LINE1" "$CLR"
+printf "%b%b\n" "$LINE2" "$CLR"
+printf "%b%b\n" "$LINE3" "$CLR"
+printf "%b%b\n" "$LINE4" "$CLR"

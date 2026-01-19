@@ -5,6 +5,8 @@
 # Line 1: 🤖Model 📂path 🌿(branch)✅
 # Line 2: 🧠bar 5Hbar 7Dbar
 # ============================================================================
+# v2.1.0 - Fixed: echo -e → variables, added line clear \033[K
+# ============================================================================
 
 input=$(cat)
 
@@ -15,20 +17,21 @@ CONTEXT_SIZE=$(echo "$input" | jq -r '.context_window.context_window_size // 200
 CURRENT_USAGE=$(echo "$input" | jq -r '.context_window.current_usage // null')
 
 # ============================================================================
-# Colors
+# Colors (variables instead of functions to avoid newline issues)
 # ============================================================================
 RESET="\033[0m"
 BOLD="\033[1m"
+CLR="\033[K"  # Clear to end of line
 
-cat_teal() { echo -e "\033[38;2;148;226;213m"; }
-cat_green() { echo -e "\033[38;2;166;227;161m"; }
-cat_subtext() { echo -e "\033[38;2;166;173;200m"; }
-cat_lavender() { echo -e "\033[38;2;180;190;254m"; }
-cat_yellow() { echo -e "\033[38;2;249;226;175m"; }
-cat_overlay() { echo -e "\033[38;2;108;112;134m"; }
-latte_green() { echo -e "\033[38;2;64;160;43m"; }
-latte_red() { echo -e "\033[38;2;210;15;57m"; }
-latte_yellow() { echo -e "\033[38;2;223;142;29m"; }
+C_TEAL="\033[38;2;148;226;213m"
+C_GREEN="\033[38;2;166;227;161m"
+C_SUBTEXT="\033[38;2;166;173;200m"
+C_LAVENDER="\033[38;2;180;190;254m"
+C_YELLOW="\033[38;2;249;226;175m"
+C_OVERLAY="\033[38;2;108;112;134m"
+C_LATTE_GREEN="\033[38;2;64;160;43m"
+C_LATTE_RED="\033[38;2;210;15;57m"
+C_LATTE_YELLOW="\033[38;2;223;142;29m"
 
 # ============================================================================
 # Gradient Functions
@@ -52,7 +55,6 @@ get_context_gradient_color() {
     echo "$r;$g;$b"
 }
 
-# 5H: Mocha Lavender → Latte Blue → Latte Red
 get_usage_gradient_color() {
     local pct=$1
     local r g b
@@ -70,7 +72,6 @@ get_usage_gradient_color() {
     echo "$r;$g;$b"
 }
 
-# 7D: Mocha Yellow → Latte Peach → Latte Red
 get_usage_7d_gradient_color() {
     local pct=$1
     local r g b
@@ -118,40 +119,40 @@ generate_bar() {
         bar+="\033[38;2;${end_color}m░"
     done
 
-    echo -e "$bar$RESET"
+    printf "%b%b" "$bar" "$RESET"
 }
 
 # ============================================================================
 # Line 1: Model + Directory + Git
 # ============================================================================
 
-# Model (short name, bold) - extract just model name without version for compact
+# Model (short name, bold)
 SHORT_MODEL=$(echo "$MODEL" | sed 's/Claude //; s/ [0-9.]*//')
-MODEL_DISPLAY="🤖${BOLD}$(cat_teal)${SHORT_MODEL}${RESET}"
+MODEL_DISPLAY="🤖${BOLD}${C_TEAL}${SHORT_MODEL}${RESET}"
 
 # Directory (with ~ for home)
 HOME_DIR="${HOME:-/Users/$USER}"
-DIR_DISPLAY="📂$(cat_subtext)${CURRENT_DIR/$HOME_DIR/~}${RESET}"
+DIR_DISPLAY="📂${C_SUBTEXT}${CURRENT_DIR/$HOME_DIR/~}${RESET}"
 
 # Git
 GIT_DISPLAY=""
 cd "$CURRENT_DIR" 2>/dev/null
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
-    [[ -n "$BRANCH" ]] && GIT_DISPLAY="$(latte_green)🌿(${BRANCH})${RESET}"
+    [[ -n "$BRANCH" ]] && GIT_DISPLAY="${C_LATTE_GREEN}🌿(${BRANCH})${RESET}"
 
     STAGED=$(git diff --cached --name-only 2>/dev/null | wc -l | tr -d ' ')
     UNSTAGED=$(git diff --name-only 2>/dev/null | wc -l | tr -d ' ')
     UNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ')
 
     if [[ "$STAGED" -eq 0 && "$UNSTAGED" -eq 0 && "$UNTRACKED" -eq 0 ]]; then
-        GIT_DISPLAY="${GIT_DISPLAY}$(cat_green)✅${RESET}"
+        GIT_DISPLAY="${GIT_DISPLAY}${C_GREEN}✅${RESET}"
     else
         STATUS=""
         [[ "$STAGED" -gt 0 ]] && STATUS="${STATUS}+"
         [[ "$UNSTAGED" -gt 0 ]] && STATUS="${STATUS}!"
         [[ "$UNTRACKED" -gt 0 ]] && STATUS="${STATUS}?"
-        GIT_DISPLAY="${GIT_DISPLAY}$(latte_yellow)📝${STATUS}${RESET}"
+        GIT_DISPLAY="${GIT_DISPLAY}${C_LATTE_YELLOW}📝${STATUS}${RESET}"
     fi
 fi
 
@@ -209,13 +210,13 @@ if [[ -n "$USAGE_DATA" ]]; then
     FIVE_BAR=$(generate_bar "$FIVE_HOUR" 10 "5h")
     SEVEN_BAR=$(generate_bar "$SEVEN_DAY" 10 "7d")
 
-    LINE2="🧠${CTX_BAR} $(cat_lavender)5H${RESET}${FIVE_BAR} $(cat_yellow)7D${RESET}${SEVEN_BAR}"
+    LINE2="🧠${CTX_BAR} ${C_LAVENDER}5H${RESET}${FIVE_BAR} ${C_YELLOW}7D${RESET}${SEVEN_BAR}"
 else
-    LINE2="🧠${CTX_BAR} $(cat_overlay)Usage: N/A${RESET}"
+    LINE2="🧠${CTX_BAR} ${C_OVERLAY}Usage: N/A${RESET}"
 fi
 
 # ============================================================================
-# Output
+# Output (using printf with line clear)
 # ============================================================================
-echo -e "$LINE1"
-echo -e "$LINE2"
+printf "%b%b\n" "$LINE1" "$CLR"
+printf "%b%b\n" "$LINE2" "$CLR"

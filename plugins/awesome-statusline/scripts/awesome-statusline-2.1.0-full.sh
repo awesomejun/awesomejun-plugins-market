@@ -9,6 +9,8 @@
 # Line 5: 🌟 7D Limit bar 40 blocks - Yellow→Yellow(40%)→Green(80%)→Red(100%)
 # 5H Reset: "(Resets in 2h15m)" | 7D Reset: "(Resets Jan 21 at 2pm)"
 # ============================================================================
+# v2.1.0 - Fixed: echo -e → variables, added line clear \033[K
+# ============================================================================
 
 input=$(cat)
 
@@ -22,28 +24,28 @@ TOTAL_COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 TOTAL_DURATION=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
 
 # ============================================================================
-# Colors
+# Colors (variables instead of functions to avoid newline issues)
 # ============================================================================
 RESET="\033[0m"
 BOLD="\033[1m"
+CLR="\033[K"  # Clear to end of line
 
-cat_teal() { echo -e "\033[38;2;148;226;213m"; }
-cat_pink() { echo -e "\033[38;2;245;194;231m"; }
-cat_peach() { echo -e "\033[38;2;250;179;135m"; }
-cat_green() { echo -e "\033[38;2;166;227;161m"; }
-cat_subtext() { echo -e "\033[38;2;166;173;200m"; }
-cat_lavender() { echo -e "\033[38;2;180;190;254m"; }
-cat_yellow() { echo -e "\033[38;2;249;226;175m"; }
-cat_overlay() { echo -e "\033[38;2;108;112;134m"; }
-latte_green() { echo -e "\033[38;2;64;160;43m"; }
-latte_red() { echo -e "\033[38;2;210;15;57m"; }
-latte_yellow() { echo -e "\033[38;2;223;142;29m"; }
-latte_pink() { echo -e "\033[38;2;234;118;203m"; }
-latte_maroon() { echo -e "\033[38;2;230;69;83m"; }
-latte_sky() { echo -e "\033[38;2;4;165;229m"; }
-latte_blue() { echo -e "\033[38;2;30;102;245m"; }
-mocha_maroon() { echo -e "\033[38;2;235;160;172m"; }
-pure_black() { echo -e "\033[38;2;0;0;0m"; }
+C_TEAL="\033[38;2;148;226;213m"
+C_PINK="\033[38;2;245;194;231m"
+C_PEACH="\033[38;2;250;179;135m"
+C_GREEN="\033[38;2;166;227;161m"
+C_SUBTEXT="\033[38;2;166;173;200m"
+C_LAVENDER="\033[38;2;180;190;254m"
+C_YELLOW="\033[38;2;249;226;175m"
+C_OVERLAY="\033[38;2;108;112;134m"
+C_LATTE_GREEN="\033[38;2;64;160;43m"
+C_LATTE_RED="\033[38;2;210;15;57m"
+C_LATTE_YELLOW="\033[38;2;223;142;29m"
+C_LATTE_PINK="\033[38;2;234;118;203m"
+C_LATTE_MAROON="\033[38;2;230;69;83m"
+C_LATTE_SKY="\033[38;2;4;165;229m"
+C_LATTE_BLUE="\033[38;2;30;102;245m"
+C_MOCHA_MAROON="\033[38;2;235;160;172m"
 
 # ============================================================================
 # Gradient Functions
@@ -154,7 +156,7 @@ generate_bar() {
         bar+="\033[38;2;${end_color}m░"
     done
 
-    echo -e "$bar$RESET"
+    printf "%b%b" "$bar" "$RESET"
 }
 
 # ============================================================================
@@ -162,11 +164,11 @@ generate_bar() {
 # ============================================================================
 
 # Model (bold)
-MODEL_DISPLAY="🤖 ${BOLD}$(cat_teal)${MODEL}${RESET}"
+MODEL_DISPLAY="🤖 ${BOLD}${C_TEAL}${MODEL}${RESET}"
 
 # Output style (moved to second position)
 STYLE_DISPLAY=""
-[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY="🎨 $(cat_peach)${OUTPUT_STYLE}${RESET}"
+[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY="🎨 ${C_PEACH}${OUTPUT_STYLE}${RESET}"
 
 # Git status with ahead/behind arrows
 GIT_STATUS_DISPLAY=""
@@ -183,32 +185,32 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
         if [[ -n "$COUNTS" ]]; then
             AHEAD=$(echo "$COUNTS" | awk '{print $1}')
             BEHIND=$(echo "$COUNTS" | awk '{print $2}')
-            [[ "$AHEAD" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}$(latte_sky)↑${AHEAD}${RESET}"
-            [[ "$BEHIND" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}$(latte_pink)↓${BEHIND}${RESET}"
+            [[ "$AHEAD" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}${C_LATTE_SKY}↑${AHEAD}${RESET}"
+            [[ "$BEHIND" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}${C_LATTE_PINK}↓${BEHIND}${RESET}"
         fi
     fi
 
     if [[ "$STAGED" -eq 0 && "$UNSTAGED" -eq 0 && "$UNTRACKED" -eq 0 ]]; then
-        GIT_STATUS_DISPLAY="$(cat_green)✅ git clean${RESET}"
+        GIT_STATUS_DISPLAY="${C_GREEN}✅ git clean${RESET}"
         [[ -n "$AHEAD_BEHIND" ]] && GIT_STATUS_DISPLAY="${GIT_STATUS_DISPLAY} ${AHEAD_BEHIND}"
     else
         STATUS=""
         [[ "$STAGED" -gt 0 ]] && STATUS="${STATUS}+${STAGED}"
         [[ "$UNSTAGED" -gt 0 ]] && STATUS="${STATUS}!${UNSTAGED}"
         [[ "$UNTRACKED" -gt 0 ]] && STATUS="${STATUS}?${UNTRACKED}"
-        GIT_STATUS_DISPLAY="$(latte_yellow)📝 dirty ${STATUS}${RESET}"
+        GIT_STATUS_DISPLAY="${C_LATTE_YELLOW}📝 dirty ${STATUS}${RESET}"
         [[ -n "$AHEAD_BEHIND" ]] && GIT_STATUS_DISPLAY="${GIT_STATUS_DISPLAY} ${AHEAD_BEHIND}"
     fi
 else
-    GIT_STATUS_DISPLAY="$(cat_overlay)no git${RESET}"
+    GIT_STATUS_DISPLAY="${C_OVERLAY}no git${RESET}"
 fi
 
 # Conda env
 ENV_DISPLAY=""
 if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
-    ENV_DISPLAY="🐍 $(cat_pink)${CONDA_DEFAULT_ENV}${RESET}"
+    ENV_DISPLAY="🐍 ${C_PINK}${CONDA_DEFAULT_ENV}${RESET}"
 else
-    ENV_DISPLAY="$(cat_overlay)no env${RESET}"
+    ENV_DISPLAY="${C_OVERLAY}no env${RESET}"
 fi
 
 # Build Line 1: Model | Style | Git | Env
@@ -221,23 +223,23 @@ LINE1="${LINE1} | ${GIT_STATUS_DISPLAY} | ${ENV_DISPLAY}"
 # ============================================================================
 
 # Directory (full path, no ~)
-DIR_DISPLAY="📂 $(cat_subtext)${CURRENT_DIR}${RESET}"
+DIR_DISPLAY="📂 ${C_SUBTEXT}${CURRENT_DIR}${RESET}"
 
 # Git branch
 BRANCH_DISPLAY=""
 cd "$CURRENT_DIR" 2>/dev/null
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
-    [[ -n "$BRANCH" ]] && BRANCH_DISPLAY=" $(latte_green)🌿(${BRANCH})${RESET}"
+    [[ -n "$BRANCH" ]] && BRANCH_DISPLAY=" ${C_LATTE_GREEN}🌿(${BRANCH})${RESET}"
 fi
 
 # Cost (same color as directory)
 COST_DISPLAY=""
 if [[ "$TOTAL_COST" != "0" && -n "$TOTAL_COST" ]]; then
     COST_FMT=$(printf "%.2f" "$TOTAL_COST")
-    COST_DISPLAY="💰 $(cat_subtext)${COST_FMT}\$${RESET}"
+    COST_DISPLAY="💰 ${C_SUBTEXT}${COST_FMT}\$${RESET}"
 else
-    COST_DISPLAY="💰 $(cat_overlay)0.00\$${RESET}"
+    COST_DISPLAY="💰 ${C_OVERLAY}0.00\$${RESET}"
 fi
 
 # Duration
@@ -249,15 +251,15 @@ if [[ "$TOTAL_DURATION" != "0" && -n "$TOTAL_DURATION" ]]; then
     else
         DURATION_FMT="$((DURATION_SEC / 60))m"
     fi
-    DURATION_DISPLAY="⏱️ $(cat_subtext)${DURATION_FMT}${RESET}"
+    DURATION_DISPLAY="⏱️ ${C_SUBTEXT}${DURATION_FMT}${RESET}"
 else
-    DURATION_DISPLAY="⏱️ $(cat_overlay)0m${RESET}"
+    DURATION_DISPLAY="⏱️ ${C_OVERLAY}0m${RESET}"
 fi
 
 LINE2="${DIR_DISPLAY}${BRANCH_DISPLAY} | ${COST_DISPLAY} | ${DURATION_DISPLAY}"
 
 # ============================================================================
-# Line 3: Context (20 blocks)
+# Line 3: Context (40 blocks)
 # ============================================================================
 
 CONTEXT_PERCENT=0
@@ -276,10 +278,10 @@ CONTEXT_K=$((CONTEXT_SIZE / 1000))
 
 CTX_BAR=$(generate_bar "$CONTEXT_PERCENT" 40 "context")
 CTX_END_COLOR=$(get_context_gradient_color "$CONTEXT_PERCENT")
-LINE3="🧠 $(mocha_maroon)Context${RESET}  ${CTX_BAR} ${BOLD}\033[38;2;${CTX_END_COLOR}m${CONTEXT_PERCENT}% used${RESET} (${TOKENS_K}k/${CONTEXT_K}k)"
+LINE3="🧠 ${C_MOCHA_MAROON}Context${RESET}  ${CTX_BAR} ${BOLD}\033[38;2;${CTX_END_COLOR}m${CONTEXT_PERCENT}% used${RESET} (${TOKENS_K}k/${CONTEXT_K}k)"
 
 # ============================================================================
-# Lines 4-5: Usage 5H and 7D (20 blocks)
+# Lines 4-5: Usage 5H and 7D (40 blocks)
 # ============================================================================
 
 get_usage_data() {
@@ -362,18 +364,18 @@ if [[ -n "$USAGE_DATA" ]]; then
     FIVE_END_COLOR=$(get_usage_gradient_color "$FIVE_HOUR")
     SEVEN_END_COLOR=$(get_usage_7d_gradient_color "$SEVEN_DAY")
 
-    LINE4="🚀 $(cat_lavender)5H Limit${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (Resets ${FIVE_RESET_FMT})"
-    LINE5="🌟 $(cat_yellow)7D Limit${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (Resets ${SEVEN_RESET_FMT})"
+    LINE4="🚀 ${C_LAVENDER}5H Limit${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (Resets ${FIVE_RESET_FMT})"
+    LINE5="🌟 ${C_YELLOW}7D Limit${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (Resets ${SEVEN_RESET_FMT})"
 else
-    LINE4="🚀 $(cat_overlay)5H Limit${RESET}: N/A"
-    LINE5="🌟 $(cat_overlay)7D Limit${RESET}: N/A"
+    LINE4="🚀 ${C_OVERLAY}5H Limit${RESET}: N/A"
+    LINE5="🌟 ${C_OVERLAY}7D Limit${RESET}: N/A"
 fi
 
 # ============================================================================
-# Output
+# Output (using printf with line clear)
 # ============================================================================
-echo -e "$LINE1"
-echo -e "$LINE2"
-echo -e "$LINE3"
-echo -e "$LINE4"
-echo -e "$LINE5"
+printf "%b%b\n" "$LINE1" "$CLR"
+printf "%b%b\n" "$LINE2" "$CLR"
+printf "%b%b\n" "$LINE3" "$CLR"
+printf "%b%b\n" "$LINE4" "$CLR"
+printf "%b%b\n" "$LINE5" "$CLR"

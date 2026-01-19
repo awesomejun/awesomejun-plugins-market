@@ -6,6 +6,8 @@
 # Line 2: 🧠 Context bar % | 5H bar % (time) | 7D bar % (day)
 # % numbers use gradient end color + Bold
 # ============================================================================
+# v2.1.0 - Fixed: echo -e → variables, added line clear \033[K
+# ============================================================================
 
 input=$(cat)
 
@@ -17,22 +19,23 @@ CURRENT_USAGE=$(echo "$input" | jq -r '.context_window.current_usage // null')
 OUTPUT_STYLE=$(echo "$input" | jq -r '.output_style.name // ""')
 
 # ============================================================================
-# Colors
+# Colors (variables instead of functions to avoid newline issues)
 # ============================================================================
 RESET="\033[0m"
 BOLD="\033[1m"
+CLR="\033[K"  # Clear to end of line
 
-cat_teal() { echo -e "\033[38;2;148;226;213m"; }
-cat_pink() { echo -e "\033[38;2;245;194;231m"; }
-cat_peach() { echo -e "\033[38;2;250;179;135m"; }
-cat_green() { echo -e "\033[38;2;166;227;161m"; }
-cat_subtext() { echo -e "\033[38;2;166;173;200m"; }
-cat_lavender() { echo -e "\033[38;2;180;190;254m"; }
-cat_yellow() { echo -e "\033[38;2;249;226;175m"; }
-cat_overlay() { echo -e "\033[38;2;108;112;134m"; }
-latte_green() { echo -e "\033[38;2;64;160;43m"; }
-latte_red() { echo -e "\033[38;2;210;15;57m"; }
-latte_yellow() { echo -e "\033[38;2;223;142;29m"; }
+C_TEAL="\033[38;2;148;226;213m"
+C_PINK="\033[38;2;245;194;231m"
+C_PEACH="\033[38;2;250;179;135m"
+C_GREEN="\033[38;2;166;227;161m"
+C_SUBTEXT="\033[38;2;166;173;200m"
+C_LAVENDER="\033[38;2;180;190;254m"
+C_YELLOW="\033[38;2;249;226;175m"
+C_OVERLAY="\033[38;2;108;112;134m"
+C_LATTE_GREEN="\033[38;2;64;160;43m"
+C_LATTE_RED="\033[38;2;210;15;57m"
+C_LATTE_YELLOW="\033[38;2;223;142;29m"
 
 # ============================================================================
 # Gradient Functions
@@ -122,7 +125,7 @@ generate_bar() {
         bar+="\033[38;2;${end_color}m░"
     done
 
-    echo -e "$bar$RESET"
+    printf "%b%b" "$bar" "$RESET"
 }
 
 # ============================================================================
@@ -130,34 +133,34 @@ generate_bar() {
 # ============================================================================
 
 # Model (bold)
-MODEL_DISPLAY="🤖 ${BOLD}$(cat_teal)${MODEL}${RESET}"
+MODEL_DISPLAY="🤖 ${BOLD}${C_TEAL}${MODEL}${RESET}"
 
 # Output style
 STYLE_DISPLAY=""
-[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY=" | 🎨 $(cat_peach)${OUTPUT_STYLE}${RESET}"
+[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY=" | 🎨 ${C_PEACH}${OUTPUT_STYLE}${RESET}"
 
 # Directory (with ~ for home)
-DIR_DISPLAY="📂 $(cat_subtext)${CURRENT_DIR/$HOME/~}${RESET}"
+DIR_DISPLAY="📂 ${C_SUBTEXT}${CURRENT_DIR/$HOME/~}${RESET}"
 
 # Git
 GIT_DISPLAY=""
 cd "$CURRENT_DIR" 2>/dev/null
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
-    [[ -n "$BRANCH" ]] && GIT_DISPLAY="$(latte_green)🌿(${BRANCH})${RESET}"
+    [[ -n "$BRANCH" ]] && GIT_DISPLAY="${C_LATTE_GREEN}🌿(${BRANCH})${RESET}"
 
     STAGED=$(git diff --cached --name-only 2>/dev/null | wc -l | tr -d ' ')
     UNSTAGED=$(git diff --name-only 2>/dev/null | wc -l | tr -d ' ')
     UNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null | wc -l | tr -d ' ')
 
     if [[ "$STAGED" -eq 0 && "$UNSTAGED" -eq 0 && "$UNTRACKED" -eq 0 ]]; then
-        GIT_DISPLAY="${GIT_DISPLAY}$(cat_green)✅${RESET}"
+        GIT_DISPLAY="${GIT_DISPLAY}${C_GREEN}✅${RESET}"
     else
         STATUS=""
         [[ "$STAGED" -gt 0 ]] && STATUS="${STATUS}+"
         [[ "$UNSTAGED" -gt 0 ]] && STATUS="${STATUS}!"
         [[ "$UNTRACKED" -gt 0 ]] && STATUS="${STATUS}?"
-        GIT_DISPLAY="${GIT_DISPLAY}$(latte_yellow)📝${STATUS}${RESET}"
+        GIT_DISPLAY="${GIT_DISPLAY}${C_LATTE_YELLOW}📝${STATUS}${RESET}"
     fi
 fi
 
@@ -179,7 +182,7 @@ fi
 
 CTX_BAR=$(generate_bar "$CONTEXT_PERCENT" 10 "context")
 CTX_END_COLOR=$(get_context_gradient_color "$CONTEXT_PERCENT")
-CTX_DISPLAY="🧠 $(cat_pink)Context${RESET} ${CTX_BAR} ${BOLD}\033[38;2;${CTX_END_COLOR}m${CONTEXT_PERCENT}%${RESET}"
+CTX_DISPLAY="🧠 ${C_PINK}Context${RESET} ${CTX_BAR} ${BOLD}\033[38;2;${CTX_END_COLOR}m${CONTEXT_PERCENT}%${RESET}"
 
 # Usage data
 get_usage_data() {
@@ -250,16 +253,16 @@ if [[ -n "$USAGE_DATA" ]]; then
     FIVE_END_COLOR=$(get_usage_gradient_color "$FIVE_HOUR")
     SEVEN_END_COLOR=$(get_usage_7d_gradient_color "$SEVEN_DAY")
 
-    FIVE_DISPLAY="$(cat_lavender)5H${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (${FIVE_RESET_FMT})"
-    SEVEN_DISPLAY="$(cat_yellow)7D${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (${SEVEN_RESET_FMT})"
+    FIVE_DISPLAY="${C_LAVENDER}5H${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (${FIVE_RESET_FMT})"
+    SEVEN_DISPLAY="${C_YELLOW}7D${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (${SEVEN_RESET_FMT})"
 
     LINE2="${CTX_DISPLAY} | ${FIVE_DISPLAY} | ${SEVEN_DISPLAY}"
 else
-    LINE2="${CTX_DISPLAY} | $(cat_overlay)Usage: N/A${RESET}"
+    LINE2="${CTX_DISPLAY} | ${C_OVERLAY}Usage: N/A${RESET}"
 fi
 
 # ============================================================================
-# Output
+# Output (using printf with line clear)
 # ============================================================================
-echo -e "$LINE1"
-echo -e "$LINE2"
+printf "%b%b\n" "$LINE1" "$CLR"
+printf "%b%b\n" "$LINE2" "$CLR"
