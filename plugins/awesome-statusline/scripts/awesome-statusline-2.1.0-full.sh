@@ -1,15 +1,13 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # ============================================================================
 # Awesome Statusline - FULL (Long) Mode
 # ============================================================================
 # Line 1: 🤖 Model | 🎨 Style | ✅ Git (↑ahead ↓behind) | 🐍 Env
-# Line 2: 📂 full path 🌿(branch) | 💰 cost | ⏰ duration
+# Line 2: 📂 full path 🌿(branch) | 💰 cost | ⏱️ duration
 # Line 3: 🧠 Context bar 40 blocks - MochaMaroon→LatteMaroon(40%)→Red(80-100%)
 # Line 4: 🚀 5H Limit bar 40 blocks - Lavender→Lavender(40%)→Blue(80%)→Red(100%)
 # Line 5: 🌟 7D Limit bar 40 blocks - Yellow→Yellow(40%)→Green(80%)→Red(100%)
 # 5H Reset: "(Resets in 2h15m)" | 7D Reset: "(Resets Jan 21 at 2pm)"
-# ============================================================================
-# v2.1.0 - Fixed: echo -e → variables, added line clear \033[K, pre-calc colors, atomic output
 # ============================================================================
 
 input=$(cat)
@@ -24,70 +22,107 @@ TOTAL_COST=$(echo "$input" | jq -r '.cost.total_cost_usd // 0')
 TOTAL_DURATION=$(echo "$input" | jq -r '.cost.total_duration_ms // 0')
 
 # ============================================================================
-# Colors (variables instead of functions to avoid newline issues)
+# Colors
 # ============================================================================
 RESET="\033[0m"
 BOLD="\033[1m"
-CLR="\033[K"  # Clear to end of line
 
-C_TEAL="\033[38;2;148;226;213m"
-C_PINK="\033[38;2;245;194;231m"
-C_PEACH="\033[38;2;250;179;135m"
-C_GREEN="\033[38;2;166;227;161m"
-C_SUBTEXT="\033[38;2;166;173;200m"
-C_LAVENDER="\033[38;2;180;190;254m"
-C_YELLOW="\033[38;2;249;226;175m"
-C_OVERLAY="\033[38;2;108;112;134m"
-C_LATTE_GREEN="\033[38;2;64;160;43m"
-C_LATTE_RED="\033[38;2;210;15;57m"
-C_LATTE_YELLOW="\033[38;2;223;142;29m"
-C_LATTE_PINK="\033[38;2;234;118;203m"
-C_LATTE_MAROON="\033[38;2;230;69;83m"
-C_LATTE_SKY="\033[38;2;4;165;229m"
-C_LATTE_BLUE="\033[38;2;30;102;245m"
-C_MOCHA_MAROON="\033[38;2;235;160;172m"
+cat_teal() { echo -e "\033[38;2;148;226;213m"; }
+cat_pink() { echo -e "\033[38;2;245;194;231m"; }
+cat_peach() { echo -e "\033[38;2;250;179;135m"; }
+cat_green() { echo -e "\033[38;2;166;227;161m"; }
+cat_subtext() { echo -e "\033[38;2;166;173;200m"; }
+cat_lavender() { echo -e "\033[38;2;180;190;254m"; }
+cat_yellow() { echo -e "\033[38;2;249;226;175m"; }
+cat_overlay() { echo -e "\033[38;2;108;112;134m"; }
+latte_green() { echo -e "\033[38;2;64;160;43m"; }
+latte_red() { echo -e "\033[38;2;210;15;57m"; }
+latte_yellow() { echo -e "\033[38;2;223;142;29m"; }
+latte_pink() { echo -e "\033[38;2;234;118;203m"; }
+latte_maroon() { echo -e "\033[38;2;230;69;83m"; }
+latte_sky() { echo -e "\033[38;2;4;165;229m"; }
+latte_blue() { echo -e "\033[38;2;30;102;245m"; }
+mocha_maroon() { echo -e "\033[38;2;235;160;172m"; }
+pure_black() { echo -e "\033[38;2;0;0;0m"; }
 
 # ============================================================================
-# Pre-calculated Gradient Colors (40 blocks) - No runtime calculation
+# Gradient Functions
 # ============================================================================
-# Context: Mocha Maroon(0%) → Latte Maroon(40%) → Latte Red(80-100%)
-GRAD_CONTEXT=(
-    "235;160;172" "234;154;166" "234;149;161" "233;143;155" "233;137;150"
-    "232;132;144" "232;126;139" "231;120;133" "231;115;127" "230;109;122"
-    "230;103;116" "229;98;111" "229;92;105" "228;86;100" "228;81;94"
-    "227;75;89" "230;69;83" "229;65;79" "228;62;76" "227;58;72"
-    "226;55;69" "225;51;65" "224;48;62" "223;44;59" "222;41;55"
-    "221;37;52" "220;34;48" "219;30;45" "218;27;41" "217;23;38"
-    "216;20;34" "215;16;31" "210;15;57" "210;15;57" "210;15;57"
-    "210;15;57" "210;15;57" "210;15;57" "210;15;57" "210;15;57"
-)
+# Context gradient: Mocha Maroon(0%) → Latte Maroon(40%) → Latte Red(80-100%)
+get_context_gradient_color() {
+    local pct=$1
+    local r g b
+
+    if [[ $pct -lt 40 ]]; then
+        # Mocha Maroon (#eba0ac) → Latte Maroon (#e64553)
+        local t=$((pct * 100 / 40))
+        r=$((235 + (230 - 235) * t / 100))
+        g=$((160 + (69 - 160) * t / 100))
+        b=$((172 + (83 - 172) * t / 100))
+    elif [[ $pct -lt 80 ]]; then
+        # Latte Maroon (#e64553) → Latte Red (#d20f39)
+        local t=$(((pct - 40) * 100 / 40))
+        r=$((230 + (210 - 230) * t / 100))
+        g=$((69 + (15 - 69) * t / 100))
+        b=$((83 + (57 - 83) * t / 100))
+    else
+        # Latte Red (#d20f39) - hold at 80-100%
+        r=210; g=15; b=57
+    fi
+    echo "$r;$g;$b"
+}
 
 # 5H: Mocha Lavender(0%) → Latte Lavender(40%) → Latte Blue(80%) → Latte Red(100%)
-GRAD_5H=(
-    "180;190;254" "175;186;253" "171;183;253" "167;179;253" "163;176;253"
-    "158;172;253" "154;169;253" "150;165;253" "146;162;253" "141;158;253"
-    "137;155;253" "133;151;253" "129;148;253" "124;144;253" "120;141;253"
-    "116;137;253" "114;135;253" "108;132;252" "103;130;251" "98;127;250"
-    "93;125;249" "87;122;248" "82;120;247" "77;117;247" "72;115;246"
-    "66;112;245" "61;110;244" "56;107;243" "51;105;242" "45;102;241"
-    "40;100;241" "35;97;240" "30;102;245" "52;98;235" "75;93;226"
-    "97;89;216" "120;84;207" "142;80;197" "165;75;188" "210;15;57"
-)
+get_usage_gradient_color() {
+    local pct=$1
+    local r g b
+    if [[ $pct -lt 40 ]]; then
+        # Mocha Lavender (#b4befe) → Latte Lavender (#7287fd)
+        local t=$((pct * 100 / 40))
+        r=$((180 + (114 - 180) * t / 100))
+        g=$((190 + (135 - 190) * t / 100))
+        b=$((254 + (253 - 254) * t / 100))
+    elif [[ $pct -lt 80 ]]; then
+        # Latte Lavender (#7287fd) → Latte Blue (#1e66f5)
+        local t=$(((pct - 40) * 100 / 40))
+        r=$((114 + (30 - 114) * t / 100))
+        g=$((135 + (102 - 135) * t / 100))
+        b=$((253 + (245 - 253) * t / 100))
+    else
+        # Latte Blue (#1e66f5) → Latte Red (#d20f39)
+        local t=$(((pct - 80) * 100 / 20))
+        r=$((30 + (210 - 30) * t / 100))
+        g=$((102 + (15 - 102) * t / 100))
+        b=$((245 + (57 - 245) * t / 100))
+    fi
+    echo "$r;$g;$b"
+}
 
 # 7D: Mocha Yellow(0%) → Latte Yellow(40%) → Latte Green(80%) → Latte Red(100%)
-GRAD_7D=(
-    "249;226;175" "247;220;165" "246;215;156" "244;210;147" "243;204;138"
-    "241;199;129" "240;194;120" "238;188;111" "237;183;102" "235;178;93"
-    "234;172;83" "232;167;74" "231;162;65" "229;157;56" "228;151;47"
-    "226;146;38" "223;142;29" "213;142;29" "203;143;30" "193;144;31"
-    "183;145;32" "173;146;33" "163;147;34" "153;148;35" "143;148;36"
-    "133;149;37" "123;150;38" "113;151;39" "103;152;40" "93;153;40"
-    "83;154;41" "74;156;42" "64;160;43" "82;141;44" "101;123;45"
-    "119;104;47" "138;86;48" "156;67;50" "175;49;51" "210;15;57"
-)
-
-# Empty bar color (overlay gray)
-C_BAR_EMPTY="108;112;134"
+get_usage_7d_gradient_color() {
+    local pct=$1
+    local r g b
+    if [[ $pct -lt 40 ]]; then
+        # Mocha Yellow (#f9e2af) → Latte Yellow (#df8e1d)
+        local t=$((pct * 100 / 40))
+        r=$((249 + (223 - 249) * t / 100))
+        g=$((226 + (142 - 226) * t / 100))
+        b=$((175 + (29 - 175) * t / 100))
+    elif [[ $pct -lt 80 ]]; then
+        # Latte Yellow (#df8e1d) → Latte Green (#40a02b)
+        local t=$(((pct - 40) * 100 / 40))
+        r=$((223 + (64 - 223) * t / 100))
+        g=$((142 + (160 - 142) * t / 100))
+        b=$((29 + (43 - 29) * t / 100))
+    else
+        # Latte Green (#40a02b) → Latte Red (#d20f39)
+        local t=$(((pct - 80) * 100 / 20))
+        r=$((64 + (210 - 64) * t / 100))
+        g=$((160 + (15 - 160) * t / 100))
+        b=$((43 + (57 - 43) * t / 100))
+    fi
+    echo "$r;$g;$b"
+}
 
 generate_bar() {
     local pct=$1
@@ -97,44 +132,29 @@ generate_bar() {
     local filled=$(( (pct * width + 50) / 100 ))
     [[ $filled -gt $width ]] && filled=$width
 
-    # Select gradient array
-    local -n colors
+    local end_color
     case "$type" in
-        context) colors=GRAD_CONTEXT ;;
-        7d) colors=GRAD_7D ;;
-        *) colors=GRAD_5H ;;
+        context) end_color=$(get_context_gradient_color "$pct") ;;
+        7d) end_color=$(get_usage_7d_gradient_color "$pct") ;;
+        *) end_color=$(get_usage_gradient_color "$pct") ;;
     esac
 
-    # Build filled blocks using pre-calculated colors
     for ((i=0; i<filled; i++)); do
-        bar+="\033[38;2;${colors[$i]}m█"
+        local block_pct=$((i * 100 / width))
+        local color
+        case "$type" in
+            context) color=$(get_context_gradient_color "$block_pct") ;;
+            7d) color=$(get_usage_7d_gradient_color "$block_pct") ;;
+            *) color=$(get_usage_gradient_color "$block_pct") ;;
+        esac
+        bar+="\033[38;2;${color}m█"
     done
 
-    # Build empty blocks (use last filled color for continuity)
-    local empty_color="${colors[0]}"
-    [[ $filled -gt 0 ]] && empty_color="${colors[$((filled-1))]}"
     for ((i=0; i<width-filled; i++)); do
-        bar+="\033[38;2;${empty_color}m░"
+        bar+="\033[38;2;${end_color}m░"
     done
 
-    printf "%b%b" "$bar" "$RESET"
-}
-
-# Get end color for percentage display
-get_end_color() {
-    local pct=$1
-    local type=$2
-    local idx=$(( (pct * 39 + 50) / 100 ))
-    [[ $idx -gt 39 ]] && idx=39
-
-    local -n colors
-    case "$type" in
-        context) colors=GRAD_CONTEXT ;;
-        7d) colors=GRAD_7D ;;
-        *) colors=GRAD_5H ;;
-    esac
-
-    echo "${colors[$idx]}"
+    echo -e "$bar$RESET"
 }
 
 # ============================================================================
@@ -142,11 +162,11 @@ get_end_color() {
 # ============================================================================
 
 # Model (bold)
-MODEL_DISPLAY="🤖 ${BOLD}${C_TEAL}${MODEL}${RESET}"
+MODEL_DISPLAY="🤖 ${BOLD}$(cat_teal)${MODEL}${RESET}"
 
 # Output style (moved to second position)
 STYLE_DISPLAY=""
-[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY="🎨 ${C_PEACH}${OUTPUT_STYLE}${RESET}"
+[[ -n "$OUTPUT_STYLE" ]] && STYLE_DISPLAY="🎨 $(cat_peach)${OUTPUT_STYLE}${RESET}"
 
 # Git status with ahead/behind arrows
 GIT_STATUS_DISPLAY=""
@@ -163,32 +183,32 @@ if git rev-parse --git-dir > /dev/null 2>&1; then
         if [[ -n "$COUNTS" ]]; then
             AHEAD=$(echo "$COUNTS" | awk '{print $1}')
             BEHIND=$(echo "$COUNTS" | awk '{print $2}')
-            [[ "$AHEAD" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}${C_LATTE_SKY}↑${AHEAD}${RESET}"
-            [[ "$BEHIND" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}${C_LATTE_PINK}↓${BEHIND}${RESET}"
+            [[ "$AHEAD" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}$(latte_sky)↑${AHEAD}${RESET}"
+            [[ "$BEHIND" -gt 0 ]] && AHEAD_BEHIND="${AHEAD_BEHIND}$(latte_pink)↓${BEHIND}${RESET}"
         fi
     fi
 
     if [[ "$STAGED" -eq 0 && "$UNSTAGED" -eq 0 && "$UNTRACKED" -eq 0 ]]; then
-        GIT_STATUS_DISPLAY="${C_GREEN}✅ git clean${RESET}"
+        GIT_STATUS_DISPLAY="$(cat_green)✅ git clean${RESET}"
         [[ -n "$AHEAD_BEHIND" ]] && GIT_STATUS_DISPLAY="${GIT_STATUS_DISPLAY} ${AHEAD_BEHIND}"
     else
         STATUS=""
         [[ "$STAGED" -gt 0 ]] && STATUS="${STATUS}+${STAGED}"
         [[ "$UNSTAGED" -gt 0 ]] && STATUS="${STATUS}!${UNSTAGED}"
         [[ "$UNTRACKED" -gt 0 ]] && STATUS="${STATUS}?${UNTRACKED}"
-        GIT_STATUS_DISPLAY="${C_LATTE_YELLOW}📝 dirty ${STATUS}${RESET}"
+        GIT_STATUS_DISPLAY="$(latte_yellow)📝 dirty ${STATUS}${RESET}"
         [[ -n "$AHEAD_BEHIND" ]] && GIT_STATUS_DISPLAY="${GIT_STATUS_DISPLAY} ${AHEAD_BEHIND}"
     fi
 else
-    GIT_STATUS_DISPLAY="${C_OVERLAY}no git${RESET}"
+    GIT_STATUS_DISPLAY="$(cat_overlay)no git${RESET}"
 fi
 
 # Conda env
 ENV_DISPLAY=""
 if [[ -n "$CONDA_DEFAULT_ENV" ]]; then
-    ENV_DISPLAY="🐍 ${C_PINK}${CONDA_DEFAULT_ENV}${RESET}"
+    ENV_DISPLAY="🐍 $(cat_pink)${CONDA_DEFAULT_ENV}${RESET}"
 else
-    ENV_DISPLAY="${C_OVERLAY}no env${RESET}"
+    ENV_DISPLAY="$(cat_overlay)no env${RESET}"
 fi
 
 # Build Line 1: Model | Style | Git | Env
@@ -201,23 +221,23 @@ LINE1="${LINE1} | ${GIT_STATUS_DISPLAY} | ${ENV_DISPLAY}"
 # ============================================================================
 
 # Directory (full path, no ~)
-DIR_DISPLAY="📂 ${C_SUBTEXT}${CURRENT_DIR}${RESET}"
+DIR_DISPLAY="📂 $(cat_subtext)${CURRENT_DIR}${RESET}"
 
 # Git branch
 BRANCH_DISPLAY=""
 cd "$CURRENT_DIR" 2>/dev/null
 if git rev-parse --git-dir > /dev/null 2>&1; then
     BRANCH=$(git branch --show-current 2>/dev/null)
-    [[ -n "$BRANCH" ]] && BRANCH_DISPLAY=" ${C_LATTE_GREEN}🌿(${BRANCH})${RESET}"
+    [[ -n "$BRANCH" ]] && BRANCH_DISPLAY=" $(latte_green)🌿(${BRANCH})${RESET}"
 fi
 
 # Cost (same color as directory)
 COST_DISPLAY=""
 if [[ "$TOTAL_COST" != "0" && -n "$TOTAL_COST" ]]; then
     COST_FMT=$(printf "%.2f" "$TOTAL_COST")
-    COST_DISPLAY="💰 ${C_SUBTEXT}${COST_FMT}\$${RESET}"
+    COST_DISPLAY="💰 $(cat_subtext)${COST_FMT}\$${RESET}"
 else
-    COST_DISPLAY="💰 ${C_OVERLAY}0.00\$${RESET}"
+    COST_DISPLAY="💰 $(cat_overlay)0.00\$${RESET}"
 fi
 
 # Duration
@@ -229,15 +249,15 @@ if [[ "$TOTAL_DURATION" != "0" && -n "$TOTAL_DURATION" ]]; then
     else
         DURATION_FMT="$((DURATION_SEC / 60))m"
     fi
-    DURATION_DISPLAY="⏰ ${C_SUBTEXT}${DURATION_FMT}${RESET}"
+    DURATION_DISPLAY="⏱️ $(cat_subtext)${DURATION_FMT}${RESET}"
 else
-    DURATION_DISPLAY="⏰ ${C_OVERLAY}0m${RESET}"
+    DURATION_DISPLAY="⏱️ $(cat_overlay)0m${RESET}"
 fi
 
 LINE2="${DIR_DISPLAY}${BRANCH_DISPLAY} | ${COST_DISPLAY} | ${DURATION_DISPLAY}"
 
 # ============================================================================
-# Line 3: Context (40 blocks)
+# Line 3: Context (20 blocks)
 # ============================================================================
 
 CONTEXT_PERCENT=0
@@ -255,11 +275,11 @@ TOKENS_K=$((CURRENT_TOKENS / 1000))
 CONTEXT_K=$((CONTEXT_SIZE / 1000))
 
 CTX_BAR=$(generate_bar "$CONTEXT_PERCENT" 40 "context")
-CTX_END_COLOR=$(get_end_color "$CONTEXT_PERCENT" "context")
-LINE3="🧠 ${C_MOCHA_MAROON}Context${RESET}  ${CTX_BAR} ${BOLD}\033[38;2;${CTX_END_COLOR}m${CONTEXT_PERCENT}% used${RESET} (${TOKENS_K}k/${CONTEXT_K}k)"
+CTX_END_COLOR=$(get_context_gradient_color "$CONTEXT_PERCENT")
+LINE3="🧠 $(mocha_maroon)Context${RESET}  ${CTX_BAR} ${BOLD}\033[38;2;${CTX_END_COLOR}m${CONTEXT_PERCENT}% used${RESET} (${TOKENS_K}k/${CONTEXT_K}k)"
 
 # ============================================================================
-# Lines 4-5: Usage 5H and 7D (40 blocks)
+# Lines 4-5: Usage 5H and 7D (20 blocks)
 # ============================================================================
 
 get_usage_data() {
@@ -339,25 +359,21 @@ if [[ -n "$USAGE_DATA" ]]; then
     FIVE_BAR=$(generate_bar "$FIVE_HOUR" 40 "5h")
     SEVEN_BAR=$(generate_bar "$SEVEN_DAY" 40 "7d")
 
-    FIVE_END_COLOR=$(get_end_color "$FIVE_HOUR" "5h")
-    SEVEN_END_COLOR=$(get_end_color "$SEVEN_DAY" "7d")
+    FIVE_END_COLOR=$(get_usage_gradient_color "$FIVE_HOUR")
+    SEVEN_END_COLOR=$(get_usage_7d_gradient_color "$SEVEN_DAY")
 
-    LINE4="🚀 ${C_LAVENDER}5H Limit${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (Resets ${FIVE_RESET_FMT})"
-    LINE5="🌟 ${C_YELLOW}7D Limit${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (Resets ${SEVEN_RESET_FMT})"
+    LINE4="🚀 $(cat_lavender)5H Limit${RESET} ${FIVE_BAR} ${BOLD}\033[38;2;${FIVE_END_COLOR}m${FIVE_HOUR}%${RESET} (Resets ${FIVE_RESET_FMT})"
+    LINE5="🌟 $(cat_yellow)7D Limit${RESET} ${SEVEN_BAR} ${BOLD}\033[38;2;${SEVEN_END_COLOR}m${SEVEN_DAY}%${RESET} (Resets ${SEVEN_RESET_FMT})"
 else
-    LINE4="🚀 ${C_OVERLAY}5H Limit${RESET}: N/A"
-    LINE5="🌟 ${C_OVERLAY}7D Limit${RESET}: N/A"
+    LINE4="🚀 $(cat_overlay)5H Limit${RESET}: N/A"
+    LINE5="🌟 $(cat_overlay)7D Limit${RESET}: N/A"
 fi
 
 # ============================================================================
-# Output (fully pre-rendered, cursor hidden, single write)
+# Output
 # ============================================================================
-FINAL_OUTPUT=$(printf "%b%b\n%b%b\n%b%b\n%b%b\n%b%b" \
-    "$LINE1" "$CLR" \
-    "$LINE2" "$CLR" \
-    "$LINE3" "$CLR" \
-    "$LINE4" "$CLR" \
-    "$LINE5" "$CLR")
-tput civis 2>/dev/null  # hide cursor
-printf "%s\n" "$FINAL_OUTPUT"
-tput cnorm 2>/dev/null  # restore cursor
+echo -e "$LINE1"
+echo -e "$LINE2"
+echo -e "$LINE3"
+echo -e "$LINE4"
+echo -e "$LINE5"
