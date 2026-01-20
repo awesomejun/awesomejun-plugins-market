@@ -124,8 +124,18 @@ claude
 ## 📋 Requirements
 
 - Claude Code CLI
-- macOS (for Keychain OAuth token access)
-- `jq` (for JSON parsing)
+- macOS / Windows / Linux
+- `jq` (자동 설치됨)
+
+## 🗑️ Uninstall
+
+상태 표시줄을 해제하거나 삭제하려면:
+
+```bash
+/awesome-statusline-remove          # 대화형 선택
+/awesome-statusline-remove settings # 설정만 해제 (스크립트 유지)
+/awesome-statusline-remove all      # 완전 삭제
+```
 
 ## 📄 License
 
