@@ -114,9 +114,6 @@ Claude Code 내에서 아래 슬래시 커맨드를 입력합니다:
 </p>
 
 ```bash
-# 바로 설치
-/awesome-statusline-start full
-
 # 모드 변경
 /awesome-statusline-mode full
 ```
@@ -146,9 +143,6 @@ Claude Code 내에서 아래 슬래시 커맨드를 입력합니다:
 </p>
 
 ```bash
-# 바로 설치
-/awesome-statusline-start default
-
 # 모드 변경
 /awesome-statusline-mode default
 ```
@@ -177,9 +171,6 @@ Claude Code 내에서 아래 슬래시 커맨드를 입력합니다:
 </p>
 
 ```bash
-# 바로 설치
-/awesome-statusline-start compact
-
 # 모드 변경
 /awesome-statusline-mode compact
 ```
@@ -206,9 +197,6 @@ v1.0.2의 오리지널 디자인을 유지하는 클래식 모드입니다. 40�
 </p>
 
 ```bash
-# 바로 설치
-/awesome-statusline-start legacy
-
 # 모드 변경
 /awesome-statusline-mode legacy
 ```
