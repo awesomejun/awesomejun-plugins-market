@@ -283,6 +283,14 @@ v1.0.2의 오리지널 디자인을 유지하는 클래식 모드입니다. 40�
 | `/awesome-statusline-mode legacy` | Legacy로 변경 |
 | `/awesome-statusline-mode restore` | 백업에서 복원 |
 
+### `/awesome-statusline-remove` — 설정 해제/삭제
+
+| 명령어 | 설명 |
+|--------|------|
+| `/awesome-statusline-remove` | 대화형 선택 |
+| `/awesome-statusline-remove settings` | 설정만 해제 (스크립트 유지) |
+| `/awesome-statusline-remove all` | 완전 삭제 (설정 + 스크립트 + 백업) |
+
 ---
 
 ## 📦 마켓플레이스 명령어
@@ -313,8 +321,8 @@ Claude Code 내에서 아래 명령어들을 사용할 수 있습니다:
 | 항목 | 설명 |
 |------|------|
 | **Claude Code CLI** | 최신 버전 권장 |
-| **macOS** | Keychain을 통한 OAuth 토큰 접근 |
-| **jq** | JSON 파싱 (`brew install jq`) |
+| **OS** | macOS / Windows / Linux |
+| **jq** | JSON 파싱 (설치 시 자동 설치됨) |
 
 ---
 
