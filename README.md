@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="plugins/awesome-statusline/assets/feature-overview.jpeg" alt="Awesome Statusline" width="100%"/>
+  <img src="plugins/awesome-statusline/assets/feature-overview-en.jpeg" alt="Awesome Statusline" width="100%"/>
 </p>
 
 <h1 align="center">Awesome Claude Plugins</h1>
